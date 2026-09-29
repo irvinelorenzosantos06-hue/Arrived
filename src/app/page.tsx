@@ -1,381 +1,633 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import styles from './page.module.css';
-import compStyles from '../components/Components.module.css';
-import Navbar from '../components/Navbar';
-import MetricsCards from '../components/MetricsCards';
-import AgentFleet from '../components/AgentFleet';
-import WorkflowVisualizer from '../components/WorkflowVisualizer';
-import NeuralPlayground from '../components/NeuralPlayground';
-import LiveTelemetryLogs from '../components/LiveTelemetryLogs';
-import DeployAgentModal from '../components/DeployAgentModal';
-import AgentDetailDrawer from '../components/AgentDetailDrawer';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import styles from './landing.module.css';
 import {
-  initialAgents,
-  initialWorkflowNodes,
-  initialLogs,
-  clusterMetrics as initialMetrics
-} from '../data/nexusData';
-import { Agent, TelemetryLog, ClusterMetric } from '../types/nexus';
-import {
-  Layers,
-  Bot,
-  GitBranch,
-  Terminal,
-  Activity,
-  Sparkles,
+  HeartPulse,
+  Stethoscope,
   ShieldCheck,
-  CheckCircle2
+  Activity,
+  Layers,
+  FileSpreadsheet,
+  Cpu,
+  ArrowRight,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  Pill,
+  Syringe,
+  Microscope,
+  Lock,
+  Sparkles
 } from 'lucide-react';
 
-export default function Home() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'agents' | 'workflows' | 'playground' | 'telemetry'>('overview');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [agents, setAgents] = useState<Agent[]>(initialAgents);
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
-  const [isDeployModalOpen, setIsDeployModalOpen] = useState(false);
-  const [logs, setLogs] = useState<TelemetryLog[]>(initialLogs);
-  const [isStreaming, setIsStreaming] = useState(true);
-  const [metrics, setMetrics] = useState<ClusterMetric[]>(initialMetrics);
-  const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [unreadAlerts, setUnreadAlerts] = useState(3);
+interface PatientScenario {
+  id: 'canine' | 'feline' | 'equine';
+  name: string;
+  species: string;
+  breed: string;
+  weight: string;
+  caseType: string;
+  hr: number;
+  spo2: number;
+  map: number;
+  etco2: number;
+  temp: string;
+  cri: string;
+  fluids: string;
+  notes: string;
+  safetyAlert: string;
+}
 
-  const showToast = (message: string) => {
-    setToastMessage(message);
-    setTimeout(() => {
-      setToastMessage(null);
-    }, 3500);
-  };
+const PATIENTS: Record<'canine' | 'feline' | 'equine', PatientScenario> = {
+  canine: {
+    id: 'canine',
+    name: 'Bella',
+    species: 'Canine',
+    breed: 'Golden Retriever (Female Spayed, 4y)',
+    weight: '28.4 kg (62.6 lbs)',
+    caseType: 'Post-Op Hemilaminectomy (L2–L4)',
+    hr: 86,
+    spo2: 99,
+    map: 78,
+    etco2: 38,
+    temp: '38.2°C (100.8°F)',
+    cri: 'Fentanyl CRI @ 3.0 mcg/kg/hr (85.2 mcg/hr)',
+    fluids: 'Plasmalyte-A @ 85 mL/hr (3 mL/kg/hr maintenance)',
+    notes: 'Awake and responsive. Pain score 1/4 (Glasgow Modified). Bladder expressed clear.',
+    safetyAlert: 'MDR1 Mutation Profile: Negative. Verified 7-day NSAID washout prior to surgery.'
+  },
+  feline: {
+    id: 'feline',
+    name: 'Jasper',
+    species: 'Feline',
+    breed: 'Domestic Shorthair (Male Neutered, 6y)',
+    weight: '4.8 kg (10.6 lbs)',
+    caseType: 'Acute Feline Urethral Obstruction (Post-Unblocking)',
+    hr: 142,
+    spo2: 98,
+    map: 84,
+    etco2: 34,
+    temp: '37.8°C (100.0°F)',
+    cri: 'Buprenorphine @ 0.02 mg/kg sublingual q8h',
+    fluids: 'Normosol-R @ 25 mL/hr (accounting for post-obstructive diuresis)',
+    notes: 'Closed urinary catheter patent. Urine production 4.2 mL/kg/hr. ECG sinus rhythm.',
+    safetyAlert: 'FELINE SAFETY GUARD: Acetaminophen & Permethrin strictly blacklisted on patient chart.'
+  },
+  equine: {
+    id: 'equine',
+    name: 'Sterling Monarch',
+    species: 'Equine',
+    breed: 'Thoroughbred Gelding (9y)',
+    weight: '520.0 kg (1,146 lbs)',
+    caseType: 'Large Colon Impaction & Medical Colic Evaluation',
+    hr: 44,
+    spo2: 97,
+    map: 92,
+    etco2: 40,
+    temp: '37.5°C (99.5°F)',
+    cri: 'Lidocaine CRI @ 0.05 mg/kg/min (Prokinetic protocol)',
+    fluids: 'Balanced polyionic electrolytes @ 3.5 L/hr via 10G jugular catheter',
+    notes: 'Gut sounds 2/4 all 4 quadrants. Nasogastric reflux 500 mL net. Reflux monitored q2h.',
+    safetyAlert: 'EQUINE WITHDRAWAL: Prohibited FEI substance flags tagged for competition registry.'
+  }
+};
 
-  const addLog = (message: string, level: TelemetryLog['level'] = 'INFO', agentName = 'Kernel Mesh') => {
-    const newLog: TelemetryLog = {
-      id: `log-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
-      timestamp: new Date().toLocaleTimeString(),
-      agentId: 'kernel',
-      agentName,
-      level,
-      message
-    };
-    setLogs((prev) => [...prev.slice(-99), newLog]);
-  };
+export default function LandingPage() {
+  const [activePatient, setActivePatient] = useState<'canine' | 'feline' | 'equine'>('canine');
+  const [activeTourTab, setActiveTourTab] = useState<'emergency' | 'surgery' | 'pharmacy'>('emergency');
 
-  // Subtle real-time simulation tick for live feel
-  useEffect(() => {
-    if (!isStreaming) return;
-
-    const interval = setInterval(() => {
-      // Slightly fluctuate metrics
-      setMetrics((prev) =>
-        prev.map((m, idx) => {
-          if (idx === 1) {
-            // Token throughput
-            const jitter = (Math.random() * 0.04 - 0.02).toFixed(2);
-            const base = 1.48 + parseFloat(jitter);
-            return {
-              ...m,
-              value: `${base.toFixed(2)}M`,
-              sparkline: [...m.sparkline.slice(1), base]
-            };
-          }
-          if (idx === 2) {
-            // Latency
-            const jitter = Math.floor(Math.random() * 6 - 3);
-            const lat = Math.max(82, 94 + jitter);
-            return {
-              ...m,
-              value: `${lat}`,
-              sparkline: [...m.sparkline.slice(1), lat]
-            };
-          }
-          return m;
-        })
-      );
-
-      // Periodically drop a simulated heartbeat log
-      const tickEvents = [
-        { msg: 'Qdrant vector cluster shard replication verified (3 replicas in sync)', level: 'INFO' as const, agent: 'Krypton Semantic' },
-        { msg: 'Evaluated 48 distributed edge requests with zero policy violations', level: 'SUCCESS' as const, agent: 'Sentinel Aegis' },
-        { msg: 'Worker thread pool optimized: garbage collector reclaimed 184MB memory', level: 'INFO' as const, agent: 'Vulcan Infrastructure' }
-      ];
-      const randomEvent = tickEvents[Math.floor(Math.random() * tickEvents.length)];
-      addLog(randomEvent.msg, randomEvent.level, randomEvent.agent);
-    }, 7000);
-
-    return () => clearInterval(interval);
-  }, [isStreaming]);
-
-  const handleToggleAgentStatus = (agentId: string) => {
-    setAgents((prev) =>
-      prev.map((a) => {
-        if (a.id === agentId) {
-          const newStatus = a.status === 'idle' ? 'active' : 'idle';
-          const msg = `Agent ${a.name} transition state: ${a.status.toUpperCase()} -> ${newStatus.toUpperCase()}`;
-          addLog(msg, newStatus === 'active' ? 'SUCCESS' : 'WARN', a.name);
-          showToast(msg);
-          return { ...a, status: newStatus };
-        }
-        return a;
-      })
-    );
-  };
-
-  const handleDeployAgent = (newAgent: Agent) => {
-    setAgents((prev) => [newAgent, ...prev]);
-    addLog(`Autonomous Agent ${newAgent.name} (${newAgent.callsign}) provisioned to cluster`, 'SUCCESS', newAgent.name);
-    showToast(`Successfully deployed ${newAgent.name} to mesh!`);
-  };
-
-  // Filter agents by search query across tabs if present
-  const searchedAgents = agents.filter((a) =>
-    a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.model.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    a.callsign.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const patient = PATIENTS[activePatient];
 
   return (
-    <div className={styles.mainContainer}>
-      <Navbar
-        onOpenDeployModal={() => setIsDeployModalOpen(true)}
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        unreadAlertsCount={unreadAlerts}
-      />
-
-      <main className={styles.contentWrapper}>
-        <section className={styles.heroHeader}>
-          <div className={styles.heroTitleGroup}>
-            <div className={styles.heroCategory}>
-              <Sparkles size={14} />
-              <span>Next-Gen Neural Orchestration</span>
+    <div className={styles.pageWrapper}>
+      {/* Clinical Top Navigation */}
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <Link href="/" className={styles.brandLink}>
+            <div className={styles.brandIcon}>
+              <HeartPulse size={20} />
             </div>
-            <h1 className={styles.heroTitle}>
-              NexUS <span className="gradient-text">Command Center</span>
+            <div className={styles.brandTitleGroup}>
+              <span className={styles.brandName}>CuraVet Clinical OS</span>
+              <span className={styles.brandTagline}>Veterinary Hospital Management System</span>
+            </div>
+          </Link>
+
+          <nav className={styles.navLinks} aria-label="Main Navigation">
+            <a href="#clinical-chart" className={styles.navLink}>Ward Telemetry</a>
+            <a href="#pillars" className={styles.navLink}>Clinical Capabilities</a>
+            <a href="#scenarios" className={styles.navLink}>Emergency Scenarios</a>
+            <a href="#compliance" className={styles.navLink}>Accreditations</a>
+          </nav>
+
+          <div className={styles.headerActions}>
+            <Link href="/login" className={styles.loginBtn}>
+              <Lock size={14} />
+              <span>Staff Station Login</span>
+            </Link>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        {/* Hero Section */}
+        <section className={styles.heroSection}>
+          <div className={styles.heroContent}>
+            <div className={styles.heroBadge}>
+              <Sparkles size={14} />
+              <span>Hospital Operating System v4.2 • Multi-Species Intelligence</span>
+            </div>
+
+            <h1 className={styles.heroHeading}>
+              Built for the biological complexity of veterinary medicine.
             </h1>
-            <p className={styles.heroDescription}>
-              Autonomous multi-agent synthesis, real-time semantic pipeline telemetry, and distributed high-performance neural computing.
+
+            <p className={styles.heroLead}>
+              Replace disjointed flowsheets, siloed lab diagnostics, and generic human EHR templates with an operating system engineered specifically for 24/7 veterinary emergency, surgical referral, and companion animal hospitals.
             </p>
+
+            <div className={styles.heroActions}>
+              <Link href="/login" className={styles.primaryCta}>
+                <Lock size={16} />
+                <span>Enter Clinician Station</span>
+              </Link>
+
+              <a href="#clinical-chart" className={styles.secondaryCta}>
+                <Activity size={16} />
+                <span>Explore Interactive Ward Chart</span>
+              </a>
+            </div>
           </div>
 
-          <div className={styles.heroQuickStats}>
-            <div className={styles.quickStatItem}>
-              <span className={styles.quickStatLabel}>Active Cluster</span>
-              <span className={styles.quickStatValue} style={{ color: '#22d3ee' }}>us-east-1a</span>
+          {/* Interactive Live Patient Flowsheet & Telemetry */}
+          <div id="clinical-chart" className={styles.chartPreviewCard}>
+            <div className={styles.chartCardHeader}>
+              <div className={styles.patientIdentity}>
+                <div className={styles.patientAvatar}>
+                  {activePatient === 'canine' ? '🐕' : activePatient === 'feline' ? '🐈' : '🐎'}
+                </div>
+                <div>
+                  <div className={styles.patientName}>{patient.name}</div>
+                  <div className={styles.patientMeta}>
+                    {patient.breed} • Weight: {patient.weight}
+                  </div>
+                </div>
+              </div>
+
+              {/* Species switcher tabs */}
+              <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(255,255,255,0.06)', padding: '4px', borderRadius: '6px' }}>
+                <button
+                  type="button"
+                  onClick={() => setActivePatient('canine')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '4px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: activePatient === 'canine' ? '#2e5e4e' : 'transparent',
+                    color: '#ffffff',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Canine ICU
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActivePatient('feline')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '4px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: activePatient === 'feline' ? '#2e5e4e' : 'transparent',
+                    color: '#ffffff',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Feline Critical Care
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActivePatient('equine')}
+                  style={{
+                    padding: '4px 10px',
+                    borderRadius: '4px',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    background: activePatient === 'equine' ? '#2e5e4e' : 'transparent',
+                    color: '#ffffff',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Equine Ward
+                </button>
+              </div>
             </div>
-            <div style={{ width: '1px', background: 'var(--border-subtle)' }} />
-            <div className={styles.quickStatItem}>
-              <span className={styles.quickStatLabel}>Compute Tier</span>
-              <span className={styles.quickStatValue}>H100 SXM5</span>
-            </div>
-            <div style={{ width: '1px', background: 'var(--border-subtle)' }} />
-            <div className={styles.quickStatItem}>
-              <span className={styles.quickStatLabel}>Uptime SLA</span>
-              <span className={styles.quickStatValue} style={{ color: '#34d399' }}>99.992%</span>
+
+            <div className={styles.chartCardBody}>
+              {/* Column 1: Active Vital Parameters */}
+              <div className={styles.chartColumn}>
+                <div className={styles.columnHeading}>Continuous Vital Telemetry</div>
+
+                <div className={styles.vitalBlock}>
+                  <span className={styles.vitalLabel}>Heart Rate & Rhythm</span>
+                  <div className={styles.vitalValueRow}>
+                    <span className={styles.vitalValue}>{patient.hr} <small style={{ fontSize: '0.8rem' }}>bpm</small></span>
+                    <span className={styles.vitalStatusNormal}>Normal sinus</span>
+                  </div>
+                </div>
+
+                <div className={styles.vitalBlock}>
+                  <span className={styles.vitalLabel}>Pulse Oximetry (SpO2)</span>
+                  <div className={styles.vitalValueRow}>
+                    <span className={styles.vitalValue}>{patient.spo2}%</span>
+                    <span className={styles.vitalStatusNormal}>Optimal perfusion</span>
+                  </div>
+                </div>
+
+                <div className={styles.vitalBlock}>
+                  <span className={styles.vitalLabel}>Mean Arterial Pressure (MAP)</span>
+                  <div className={styles.vitalValueRow}>
+                    <span className={styles.vitalValue}>{patient.map} <small style={{ fontSize: '0.8rem' }}>mmHg</small></span>
+                    <span className={styles.vitalStatusNormal}>Adequate renal flow</span>
+                  </div>
+                </div>
+
+                <div className={styles.vitalBlock}>
+                  <span className={styles.vitalLabel}>End-Tidal CO2 & Temp</span>
+                  <div className={styles.vitalValueRow}>
+                    <span className={styles.vitalValue}>{patient.etco2} <small style={{ fontSize: '0.8rem' }}>mmHg</small></span>
+                    <span style={{ fontSize: '0.75rem', color: '#556c64', fontWeight: 600 }}>{patient.temp}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Column 2: Infusions, Pharmacology & Orders */}
+              <div className={styles.chartColumn}>
+                <div className={styles.columnHeading}>Precision Infusions & Fluids</div>
+
+                <div style={{
+                  background: '#f8faf8',
+                  border: '1px solid #e1ebe5',
+                  borderRadius: '8px',
+                  padding: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem'
+                }}>
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: '#6c7f79', textTransform: 'uppercase', fontWeight: 700 }}>
+                      Constant Rate Infusion (CRI)
+                    </span>
+                    <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#142328', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
+                      {patient.cri}
+                    </div>
+                  </div>
+
+                  <div style={{ borderTop: '1px solid #e1ebe5', paddingTop: '0.5rem' }}>
+                    <span style={{ fontSize: '0.7rem', color: '#6c7f79', textTransform: 'uppercase', fontWeight: 700 }}>
+                      IV Fluid Resuscitation Rate
+                    </span>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#2e5e4e', marginTop: '2px', fontFamily: 'var(--font-mono)' }}>
+                      {patient.fluids}
+                    </div>
+                  </div>
+                </div>
+
+                <div className={styles.dosageAlertBlock}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: 700, marginBottom: '4px' }}>
+                    <ShieldCheck size={16} />
+                    <span>Species-Specific Safety Check</span>
+                  </div>
+                  <div>{patient.safetyAlert}</div>
+                </div>
+              </div>
+
+              {/* Column 3: Surgical Case & Clinical Handover */}
+              <div className={styles.chartColumn}>
+                <div className={styles.columnHeading}>Clinical Case Status</div>
+
+                <div style={{
+                  background: '#f8faf8',
+                  border: '1px solid #e1ebe5',
+                  borderRadius: '8px',
+                  padding: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem'
+                }}>
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: '#6c7f79', textTransform: 'uppercase', fontWeight: 700 }}>
+                      Current Diagnosis & Procedure
+                    </span>
+                    <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#142328', marginTop: '2px' }}>
+                      {patient.caseType}
+                    </div>
+                  </div>
+
+                  <div>
+                    <span style={{ fontSize: '0.7rem', color: '#6c7f79', textTransform: 'uppercase', fontWeight: 700 }}>
+                      Charge Nurse Handover Notes
+                    </span>
+                    <p style={{ fontSize: '0.8rem', color: '#4a6159', lineHeight: 1.4, marginTop: '4px' }}>
+                      {patient.notes}
+                    </p>
+                  </div>
+                </div>
+
+                <Link
+                  href="/login"
+                  style={{
+                    marginTop: 'auto',
+                    backgroundColor: '#142328',
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    padding: '0.65rem',
+                    borderRadius: '6px',
+                    fontSize: '0.82rem',
+                    fontWeight: 600,
+                    textDecoration: 'none',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
+                >
+                  <span>Authenticate to edit chart</span>
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Global Navigation Tabs */}
-        <nav className={compStyles.tabsContainer} aria-label="Dashboard Views">
-          <div className={compStyles.tabsList}>
-            <button
-              type="button"
-              id="tab-overview"
-              className={`${compStyles.tabItem} ${activeTab === 'overview' ? compStyles.tabItemActive : ''}`}
-              onClick={() => setActiveTab('overview')}
-            >
-              <Layers size={15} />
-              <span>Overview</span>
-            </button>
-
-            <button
-              type="button"
-              id="tab-agents"
-              className={`${compStyles.tabItem} ${activeTab === 'agents' ? compStyles.tabItemActive : ''}`}
-              onClick={() => setActiveTab('agents')}
-            >
-              <Bot size={15} />
-              <span>Agent Fleet</span>
-              <span className={compStyles.tabBadge}>{searchedAgents.length}</span>
-            </button>
-
-            <button
-              type="button"
-              id="tab-workflows"
-              className={`${compStyles.tabItem} ${activeTab === 'workflows' ? compStyles.tabItemActive : ''}`}
-              onClick={() => setActiveTab('workflows')}
-            >
-              <GitBranch size={15} />
-              <span>Workflow Studio</span>
-            </button>
-
-            <button
-              type="button"
-              id="tab-playground"
-              className={`${compStyles.tabItem} ${activeTab === 'playground' ? compStyles.tabItemActive : ''}`}
-              onClick={() => setActiveTab('playground')}
-            >
-              <Terminal size={15} />
-              <span>Neural Playground</span>
-            </button>
-
-            <button
-              type="button"
-              id="tab-telemetry"
-              className={`${compStyles.tabItem} ${activeTab === 'telemetry' ? compStyles.tabItemActive : ''}`}
-              onClick={() => setActiveTab('telemetry')}
-            >
-              <Activity size={15} />
-              <span>Telemetry & Logs</span>
-              <span className={compStyles.tabBadge}>{logs.length}</span>
-            </button>
-          </div>
-
-          <div className={compStyles.tabControls}>
-            <div className={compStyles.liveBadge}>
-              <span className="pulse-dot pulse-dot-emerald" />
-              <span>LIVE MESH TELEMETRY</span>
+        {/* Pillars Section */}
+        <section id="pillars" className={styles.pillarsSection}>
+          <div className={styles.pillarsInner}>
+            <div className={styles.sectionHeader}>
+              <div className={styles.sectionPretitle}>Hospital Capabilities</div>
+              <h2 className={styles.sectionTitle}>
+                Engineered for genuine veterinary workflows
+              </h2>
+              <p className={styles.sectionDescription}>
+                Unlike human medical software retrofitted for animals, CuraVet natively understands multi-species physiology, hazardous drug toxicities, and rapid emergency handover routines.
+              </p>
             </div>
-          </div>
-        </nav>
 
-        {/* Tab 1: Overview */}
-        {activeTab === 'overview' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <MetricsCards metrics={metrics} />
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '1.5rem' }}>
-              <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff' }}>
-                    Active Agent Fleet Spotlight
-                  </h2>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('agents')}
-                    style={{ fontSize: '0.8rem', color: 'var(--accent-cyan)', fontWeight: 600 }}
-                  >
-                    View All Fleet &rarr;
-                  </button>
+            <div className={styles.pillarsGrid}>
+              <div className={styles.pillarCard}>
+                <div className={styles.pillarIcon}>
+                  <Pill size={22} />
                 </div>
-                <AgentFleet
-                  agents={searchedAgents.slice(0, 3)}
-                  onSelectAgent={(agt) => setSelectedAgent(agt)}
-                  onToggleStatus={handleToggleAgentStatus}
-                />
+                <h3 className={styles.pillarTitle}>Multi-Species Pharmacology & Safety</h3>
+                <p className={styles.pillarText}>
+                  Species-tailored dose formulas with automated weight conversion (kg / lbs) and built-in toxic drug blocks — preventing accidental administration of feline-toxic compounds or non-steroidal collisions.
+                </p>
+                <ul className={styles.pillarList}>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Feline Permethrin & Acetaminophen lockouts</li>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> MDR1 Collie gene sensitivity alerts</li>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Constant Rate Infusion (CRI) automated math</li>
+                </ul>
               </div>
 
-              <div>
-                <h2 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#fff', marginBottom: '1rem' }}>
-                  Live System Telemetry
-                </h2>
-                <LiveTelemetryLogs
-                  logs={logs.slice(-15)}
-                  onClearLogs={() => setLogs([])}
-                  isStreaming={isStreaming}
-                  onToggleStreaming={() => setIsStreaming(!isStreaming)}
-                />
+              <div className={styles.pillarCard}>
+                <div className={styles.pillarIcon}>
+                  <Stethoscope size={22} />
+                </div>
+                <h3 className={styles.pillarTitle}>Surgical Operatory & Anesthesia</h3>
+                <p className={styles.pillarText}>
+                  Digital anesthesia record sheets that capture multiparameter monitor streams (ECG, Pulse Ox, NIBP, Capnography, Temperature) with 5-minute auto-logging and DEA Schedule II drug ledger reconciliation.
+                </p>
+                <ul className={styles.pillarList}>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Automated gas concentration records</li>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Dual-witness controlled drug waste signatures</li>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> One-click surgical consent & owner authorization</li>
+                </ul>
+              </div>
+
+              <div className={styles.pillarCard}>
+                <div className={styles.pillarIcon}>
+                  <Microscope size={22} />
+                </div>
+                <h3 className={styles.pillarTitle}>Integrated In-House Lab & DICOM PACS</h3>
+                <p className={styles.pillarText}>
+                  Direct bidirectional sync with reference laboratories (IDEXX, Antech, Heska) and digital radiography systems, automatically linking bloodwork and ultrasound studies to the patient record in under 3 seconds.
+                </p>
+                <ul className={styles.pillarList}>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Zero manual transcription of CBC/Chemistry</li>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Native cloud DICOM image viewer</li>
+                  <li className={styles.pillarListItem}><CheckCircle2 size={14} /> Real-time trend graphs for renal & liver biomarkers</li>
+                </ul>
               </div>
             </div>
-
-            <WorkflowVisualizer
-              initialNodes={initialWorkflowNodes}
-              onTriggerLog={addLog}
-            />
           </div>
-        )}
+        </section>
 
-        {/* Tab 2: Agent Fleet */}
-        {activeTab === 'agents' && (
-          <section aria-labelledby="fleet-heading">
-            <h2 id="fleet-heading" className="sr-only">Autonomous Agent Fleet</h2>
-            <AgentFleet
-              agents={searchedAgents}
-              onSelectAgent={(agt) => setSelectedAgent(agt)}
-              onToggleStatus={handleToggleAgentStatus}
-            />
-          </section>
-        )}
+        {/* Interactive Scenario Walkthrough */}
+        <section id="scenarios" className={styles.tourSection}>
+          <div className={styles.sectionHeader}>
+            <div className={styles.sectionPretitle}>Clinical Walkthroughs</div>
+            <h2 className={styles.sectionTitle}>
+              Real-world hospital emergency protocols
+            </h2>
+            <p className={styles.sectionDescription}>
+              See how CuraVet streamlines high-stress patient intake, surgical anesthesia monitoring, and controlled pharmacy management.
+            </p>
+          </div>
 
-        {/* Tab 3: Workflow Studio */}
-        {activeTab === 'workflows' && (
-          <section aria-labelledby="workflow-heading">
-            <h2 id="workflow-heading" className="sr-only">Workflow Studio</h2>
-            <WorkflowVisualizer
-              initialNodes={initialWorkflowNodes}
-              onTriggerLog={addLog}
-            />
-          </section>
-        )}
+          <div className={styles.tabControls}>
+            <button
+              type="button"
+              className={`${styles.tourTabBtn} ${activeTourTab === 'emergency' ? styles.tourTabBtnActive : ''}`}
+              onClick={() => setActiveTourTab('emergency')}
+            >
+              1. Canine Acute Toxicity Triage
+            </button>
+            <button
+              type="button"
+              className={`${styles.tourTabBtn} ${activeTourTab === 'surgery' ? styles.tourTabBtnActive : ''}`}
+              onClick={() => setActiveTourTab('surgery')}
+            >
+              2. Feline Surgical Perineal Urethrostomy
+            </button>
+            <button
+              type="button"
+              className={`${styles.tourTabBtn} ${activeTourTab === 'pharmacy' ? styles.tourTabBtnActive : ''}`}
+              onClick={() => setActiveTourTab('pharmacy')}
+            >
+              3. DEA Schedule II Pharmacy Auditing
+            </button>
+          </div>
 
-        {/* Tab 4: Neural Playground */}
-        {activeTab === 'playground' && (
-          <section aria-labelledby="playground-heading">
-            <h2 id="playground-heading" className="sr-only">Neural Playground</h2>
-            <NeuralPlayground
-              agents={agents}
-              onTriggerLog={addLog}
-            />
-          </section>
-        )}
+          {activeTourTab === 'emergency' && (
+            <div className={styles.scenarioCard}>
+              <div>
+                <h3 className={styles.scenarioTitle}>Emergency Rapid Triage Protocol</h3>
+                <p className={styles.scenarioText}>
+                  Patient presents with acute dark chocolate and xylitol gum ingestion. CuraVet calculates toxic theobromine and methylxanthine threshold mg/kg in real-time, prompts apomorphine emesis protocols, and pre-orders IV lipid emulsion if cardiac arrhythmia threshold is approached.
+                </p>
+                <div className={styles.scenarioPoints}>
+                  <div><strong>Toxicology Engine:</strong> Calculated 42 mg/kg methylxanthine exposure (Moderate risk)</div>
+                  <div><strong>Action:</strong> Apomorphine 0.03 mg/kg IV administered at 07:14 • Emesis successful</div>
+                  <div><strong>Continuity:</strong> Patient placed on 24h telemetry with continuous lead II ECG monitoring</div>
+                </div>
+              </div>
+              <div className={styles.scenarioTerminal}>
+                <code>
+                  {`[07:12:04] INTAKE: Canine "Max" (Labrador, 32.1 kg)
+[07:12:08] TOXICOLOGY: 250g Dark Chocolate (60% Cacao)
+[07:12:10] CALC: Theobromine dose = 42.8 mg/kg (Emesis indicated)
+[07:12:15] ORDER: Apomorphine 0.03 mg/kg IV -> 0.96 mg
+[07:12:45] DISPENSE: Controlled vault auto-logged
+[07:13:30] TELEMETRY: Inpatient cage #08 assigned`}
+                </code>
+              </div>
+            </div>
+          )}
 
-        {/* Tab 5: Telemetry & Logs */}
-        {activeTab === 'telemetry' && (
-          <section aria-labelledby="telemetry-heading">
-            <h2 id="telemetry-heading" className="sr-only">Telemetry and Logs</h2>
-            <LiveTelemetryLogs
-              logs={logs}
-              onClearLogs={() => setLogs([])}
-              isStreaming={isStreaming}
-              onToggleStreaming={() => setIsStreaming(!isStreaming)}
-            />
-          </section>
-        )}
+          {activeTourTab === 'surgery' && (
+            <div className={styles.scenarioCard}>
+              <div>
+                <h3 className={styles.scenarioTitle}>Surgical Operatory Anesthesia Logging</h3>
+                <p className={styles.scenarioText}>
+                  During critical surgical procedures, anesthesia logs must not pull the veterinary technician away from the patient. CuraVet connects directly to veterinary vitals monitors, updating the anesthesia flowsheet automatically every 5 minutes.
+                </p>
+                <div className={styles.scenarioPoints}>
+                  <div><strong>Anesthesia Stream:</strong> Isoflurane 1.5% in 100% O2 via non-rebreathing circuit</div>
+                  <div><strong>Analgesia:</strong> Hydromorphone 0.1 mg/kg premed + Ketamine CRI continuous</div>
+                  <div><strong>Recovery:</strong> Extubated at 09:42 after active swallowing reflex verified</div>
+                </div>
+              </div>
+              <div className={styles.scenarioTerminal}>
+                <code>
+                  {`[08:45:00] SURGERY: Patient prepped, sterile drape placed
+[08:50:00] MONITOR: HR 135 | SpO2 99% | MAP 82 | Temp 37.9°C
+[08:55:00] MONITOR: Isoflurane 1.5% • Sevoflurane 0.0%
+[09:00:00] CRI: Ketamine 0.5 mg/kg/hr running
+[09:35:00] PROCEDURE: Perineal urethrostomy completed
+[09:42:00] EXTUBATION: Clean airway, recovery cage #02`}
+                </code>
+              </div>
+            </div>
+          )}
+
+          {activeTourTab === 'pharmacy' && (
+            <div className={styles.scenarioCard}>
+              <div>
+                <h3 className={styles.scenarioTitle}>DEA Schedule II Pharmacy & Waste Vault</h3>
+                <p className={styles.scenarioText}>
+                  Controlled substance reconciliation is one of the highest compliance burdens in veterinary medicine. CuraVet maintains an airtight, digital, dual-witness signed chain of custody for all opioid infusions and controlled injectables.
+                </p>
+                <div className={styles.scenarioPoints}>
+                  <div><strong>Controlled Substances:</strong> Fentanyl, Hydromorphone, Midazolam, Butorphanol</div>
+                  <div><strong>Dual Witness:</strong> Cryptographic PIN signature required for bottle drawdown and waste</div>
+                  <div><strong>Reconciliation:</strong> Zero inventory discrepancy across 1,420 surgical cycles</div>
+                </div>
+              </div>
+              <div className={styles.scenarioTerminal}>
+                <code>
+                  {`[VAULT_LOG] Fentanyl 50 mcg/mL (Vial #F-9941)
+[DRAWDOWN] Draw 1.7 mL (85 mcg) for patient "Bella"
+[WASTE] 0.3 mL residual volume witnessed & discarded
+[PRIMARY_DVM] Dr. Elena Vance (PIN Verified)
+[WITNESS_RVT] David Miller, RVT (PIN Verified)
+[BALANCE] 18.0 mL remaining in Safe A-02`}
+                </code>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Accreditations & Hospital Network */}
+        <section id="compliance" style={{ padding: '3rem 2rem', background: '#e8f1ec', borderTop: '1px solid #d2e0d8', borderBottom: '1px solid #d2e0d8' }}>
+          <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '2rem' }}>
+            <div>
+              <h4 style={{ fontFamily: 'Newsreader, Georgia, serif', fontSize: '1.25rem', fontWeight: 600, color: '#142328' }}>
+                Built for Accredited Veterinary Practice Standards
+              </h4>
+              <p style={{ fontSize: '0.85rem', color: '#556c64', marginTop: '4px' }}>
+                Full compliance with AAHA Guidelines, DEA Schedule II Pharmacy Auditing, and DICOM 3.0 Imaging.
+              </p>
+            </div>
+            <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap', fontSize: '0.8rem', fontWeight: 700, color: '#2e5e4e' }}>
+              <span>✓ AAHA Medical Record Standards</span>
+              <span>✓ DEA Schedule II Digital Logbook</span>
+              <span>✓ DICOM PACS 3.0 Certified</span>
+              <span>✓ Microchip ISO 11784/11785 Sync</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Shift Sign-In CTA Banner */}
+        <section className={styles.shiftCtaSection}>
+          <div className={styles.shiftCtaInner}>
+            <h2 className={styles.shiftHeading}>
+              Ready for your hospital shift?
+            </h2>
+            <p className={styles.shiftSubtext}>
+              Authenticate your clinical credentials to access your assigned ward station, surgical flowsheets, and active inpatient telemetry.
+            </p>
+
+            <Link href="/login" className={styles.shiftLoginBtn}>
+              <Lock size={18} />
+              <span>Launch Clinical Station (Sign In)</span>
+            </Link>
+          </div>
+        </section>
       </main>
 
-      {/* Footer */}
+      {/* Hospital Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <span style={{ fontWeight: 700, color: '#fff' }}>NexUS Autonomous Platform</span>
-            <span>•</span>
-            <span>Enterprise Multi-Agent Command Core</span>
+          <div className={styles.footerTop}>
+            <div style={{ maxWidth: '320px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.75rem' }}>
+                <div style={{ width: '28px', height: '28px', background: '#2e5e4e', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff' }}>
+                  <HeartPulse size={16} />
+                </div>
+                <span style={{ fontFamily: 'Newsreader, Georgia, serif', fontSize: '1.1rem', fontWeight: 600, color: '#142328' }}>
+                  CuraVet Clinical OS
+                </span>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: '#6c7f79', lineHeight: 1.5 }}>
+                Comprehensive hospital information and clinical telemetry software engineered exclusively for veterinary specialty and emergency medicine.
+              </p>
+            </div>
+
+            <div className={styles.footerCol}>
+              <span className={styles.footerColTitle}>Clinical Modules</span>
+              <a href="#clinical-chart" className={styles.footerLink}>Inpatient ICU & Wards</a>
+              <a href="#pillars" className={styles.footerLink}>Surgical Anesthesia Sheets</a>
+              <a href="#pillars" className={styles.footerLink}>Multi-Species Pharmacology</a>
+              <a href="#pillars" className={styles.footerLink}>PACS & Digital Imaging</a>
+            </div>
+
+            <div className={styles.footerCol}>
+              <span className={styles.footerColTitle}>Hospital Resources</span>
+              <Link href="/login" className={styles.footerLink}>Staff Station Authentication</Link>
+              <a href="#scenarios" className={styles.footerLink}>Emergency Protocols</a>
+              <a href="#compliance" className={styles.footerLink}>AAHA & DEA Compliance</a>
+              <span className={styles.footerLink}>Clinical Support Helpline (Ext 409)</span>
+            </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-            <span>Next.js 16 App Router</span>
-            <span>TypeScript 5</span>
-            <span>Vanilla Glassmorphic CSS</span>
-            <span style={{ color: '#34d399', fontWeight: 600 }}>● All Clusters Nominal</span>
+          <div className={styles.footerBottom}>
+            <div>
+              &copy; {new Date().getFullYear()} CuraVet Hospital Systems Inc. All rights reserved.
+            </div>
+            <div style={{ display: 'flex', gap: '1.5rem' }}>
+              <span>Confidential Medical Records</span>
+              <span>Encrypted Hospital Mesh</span>
+              <span>Veterinary Medical Board Compliant</span>
+            </div>
           </div>
         </div>
       </footer>
-
-      {/* Deploy Agent Modal */}
-      <DeployAgentModal
-        isOpen={isDeployModalOpen}
-        onClose={() => setIsDeployModalOpen(false)}
-        onDeploy={handleDeployAgent}
-      />
-
-      {/* Agent Details Slide-over Drawer */}
-      <AgentDetailDrawer
-        agent={selectedAgent}
-        onClose={() => setSelectedAgent(null)}
-        onActionNotification={(msg) => {
-          addLog(msg, 'ACTION', selectedAgent?.name);
-          showToast(msg);
-        }}
-      />
-
-      {/* Toast Notification */}
-      {toastMessage && (
-        <div className={styles.toastNotification} role="status">
-          <CheckCircle2 size={18} color="#06b6d4" />
-          <span>{toastMessage}</span>
-        </div>
-      )}
     </div>
   );
 }

@@ -1,0 +1,640 @@
+.pageWrapper {
+  min-height: 100vh;
+  background-color: #f5f7f4;
+  color: #1b2a26;
+  font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Clinical Header */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: rgba(245, 247, 244, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #d8e2dc;
+  padding: 1rem 2rem;
+}
+
+.headerInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.brandLink {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.brandIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background-color: #2e5e4e;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brandTitleGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #142328;
+  line-height: 1.1;
+}
+
+.brandTagline {
+  font-size: 0.7rem;
+  color: #556c64;
+  font-weight: 500;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.navLink {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a6159;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.navLink:hover {
+  color: #142328;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.loginBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #2e5e4e;
+  color: #ffffff;
+  padding: 0.55rem 1.15rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.loginBtn:hover {
+  background-color: #23493d;
+}
+
+/* Hero Section */
+.heroSection {
+  padding: 4.5rem 2rem 3.5rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.heroContent {
+  max-width: 860px;
+  margin-bottom: 3.5rem;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #e8f1ec;
+  border: 1px solid #cbd8d1;
+  color: #2e5e4e;
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+}
+
+.heroHeading {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: #142328;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.25rem;
+}
+
+.heroLead {
+  font-size: 1.15rem;
+  color: #4a6159;
+  line-height: 1.6;
+  max-width: 740px;
+  margin-bottom: 2rem;
+}
+
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.primaryCta {
+  background-color: #2e5e4e;
+  color: #ffffff;
+  padding: 0.85rem 1.75rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: background-color 0.15s ease;
+}
+
+.primaryCta:hover {
+  background-color: #23493d;
+}
+
+.secondaryCta {
+  background-color: #ffffff;
+  border: 1px solid #cbd8d1;
+  color: #2e5e4e;
+  padding: 0.85rem 1.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.secondaryCta:hover {
+  background-color: #f1f5f2;
+  border-color: #2e5e4e;
+}
+
+/* Interactive Patient Telemetry & Charting Card */
+.chartPreviewCard {
+  background-color: #ffffff;
+  border: 1px solid #d2e0d8;
+  border-radius: 12px;
+  box-shadow: 0 12px 36px rgba(20, 35, 40, 0.07);
+  overflow: hidden;
+  margin-bottom: 5rem;
+}
+
+.chartCardHeader {
+  background-color: #142328;
+  color: #e8f1ec;
+  padding: 1rem 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.patientIdentity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.patientAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background-color: #2e5e4e;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.patientName {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.patientMeta {
+  font-size: 0.75rem;
+  color: #9cb5ab;
+  font-family: var(--font-mono);
+}
+
+.chartCardBody {
+  padding: 1.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.chartColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.columnHeading {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #556c64;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid #e1ebe5;
+}
+
+.vitalBlock {
+  background-color: #f8faf8;
+  border: 1px solid #e1ebe5;
+  border-radius: 8px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.vitalLabel {
+  font-size: 0.7rem;
+  color: #6c7f79;
+}
+
+.vitalValueRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.vitalValue {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #142328;
+  font-family: var(--font-mono);
+}
+
+.vitalStatusNormal {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #065f46;
+  background-color: #ecfdf5;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.dosageAlertBlock {
+  background-color: #fdf6ec;
+  border: 1px solid #ebd3b6;
+  border-radius: 8px;
+  padding: 0.85rem;
+  font-size: 0.78rem;
+  color: #8c4e12;
+  line-height: 1.4;
+}
+
+/* Pillars Section */
+.pillarsSection {
+  background-color: #ffffff;
+  border-top: 1px solid #d8e2dc;
+  border-bottom: 1px solid #d8e2dc;
+  padding: 5rem 2rem;
+}
+
+.pillarsInner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.sectionHeader {
+  max-width: 680px;
+  margin-bottom: 3.5rem;
+}
+
+.sectionPretitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #2e5e4e;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: #142328;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.sectionDescription {
+  font-size: 1rem;
+  color: #4a6159;
+  line-height: 1.6;
+}
+
+.pillarsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.pillarCard {
+  border: 1px solid #e1ebe5;
+  border-radius: 10px;
+  padding: 2rem;
+  background-color: #f8faf8;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.pillarCard:hover {
+  border-color: #2e5e4e;
+  transform: translateY(-2px);
+}
+
+.pillarIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background-color: #e8f1ec;
+  color: #2e5e4e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pillarTitle {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #142328;
+}
+
+.pillarText {
+  font-size: 0.88rem;
+  color: #556c64;
+  line-height: 1.6;
+}
+
+.pillarList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #2e5e4e;
+}
+
+.pillarListItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Interactive Clinical Tour Section */
+.tourSection {
+  padding: 5rem 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.tabControls {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #d8e2dc;
+  padding-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.tourTabBtn {
+  background: none;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #556c64;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tourTabBtn:hover {
+  color: #142328;
+  background-color: #e8f1ec;
+}
+
+.tourTabBtnActive {
+  background-color: #2e5e4e;
+  color: #ffffff;
+}
+
+.tourTabBtnActive:hover {
+  background-color: #2e5e4e;
+  color: #ffffff;
+}
+
+.scenarioCard {
+  background-color: #ffffff;
+  border: 1px solid #d2e0d8;
+  border-radius: 12px;
+  padding: 2.5rem;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.scenarioTitle {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #142328;
+  margin-bottom: 0.75rem;
+}
+
+.scenarioText {
+  font-size: 0.95rem;
+  color: #4a6159;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.scenarioPoints {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #142328;
+}
+
+.scenarioTerminal {
+  background-color: #142328;
+  color: #e8f1ec;
+  border-radius: 8px;
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* Ready to Shift CTA */
+.shiftCtaSection {
+  background-color: #142328;
+  color: #ffffff;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.shiftCtaInner {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.shiftHeading {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.shiftSubtext {
+  font-size: 1.05rem;
+  color: #9cb5ab;
+  line-height: 1.6;
+}
+
+.shiftLoginBtn {
+  background-color: #2e5e4e;
+  color: #ffffff;
+  border: 1px solid #45806c;
+  padding: 1rem 2.25rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.shiftLoginBtn:hover {
+  background-color: #386f5c;
+  transform: translateY(-2px);
+}
+
+/* Footer */
+.footer {
+  background-color: #f1f5f2;
+  border-top: 1px solid #d8e2dc;
+  padding: 3.5rem 2rem 2rem;
+}
+
+.footerInner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footerColTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #142328;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.footerLink {
+  font-size: 0.82rem;
+  color: #556c64;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  color: #142328;
+}
+
+.footerBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #d8e2dc;
+  padding-top: 1.5rem;
+  font-size: 0.75rem;
+  color: #6c7f79;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 960px) {
+  .heroHeading {
+    font-size: 2.5rem;
+  }
+  .chartCardBody {
+    grid-template-columns: 1fr;
+  }
+  .pillarsGrid {
+    grid-template-columns: 1fr;
+  }
+  .scenarioCard {
+    grid-template-columns: 1fr;
+  }
+  .navLinks {
+    display: none;
+  }
+}
