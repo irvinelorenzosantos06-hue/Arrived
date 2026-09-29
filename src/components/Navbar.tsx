@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import styles from './Navbar.module.css';
-import { Cpu, Search, Bell, Plus, ShieldCheck, ChevronDown } from 'lucide-react';
+import { Cpu, Search, Bell, Plus, ShieldCheck, ChevronDown, Stethoscope } from 'lucide-react';
 
 interface NavbarProps {
   onOpenDeployModal: () => void;
@@ -56,6 +57,27 @@ export default function Navbar({
         </div>
 
         <div className={styles.rightSection}>
+          <Link
+            href="/login"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'rgba(46, 94, 78, 0.25)',
+              border: '1px solid rgba(139, 224, 189, 0.4)',
+              color: '#8be0bd',
+              padding: '0.45rem 0.85rem',
+              borderRadius: 'var(--radius-full)',
+              fontSize: '0.8rem',
+              fontWeight: 600,
+              textDecoration: 'none',
+              transition: 'all 0.2s ease'
+            }}
+          >
+            <Stethoscope size={14} />
+            <span>CuraVet Login</span>
+          </Link>
+
           <select className={styles.regionSelect} defaultValue="us-east-1" aria-label="Select Cloud Region">
             <option value="us-east-1">US-East (N. Virginia)</option>
             <option value="eu-central-1">EU-Central (Frankfurt)</option>

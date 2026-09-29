@@ -1,0 +1,466 @@
+.loginContainer {
+  min-height: 100vh;
+  background-color: #f1f5f2;
+  color: #1b2a26;
+  font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  background-color: #142328;
+  color: #e8f1ec;
+  padding: 0.75rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #24383e;
+}
+
+.brandArea {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brandLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #2e5e4e;
+  color: #e8f1ec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+}
+
+.brandName {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+}
+
+.brandSub {
+  font-size: 0.7rem;
+  color: #9cb5ab;
+  font-weight: 500;
+}
+
+.systemStatus {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.8rem;
+  color: #9cb5ab;
+}
+
+.statusPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(46, 94, 78, 0.4);
+  color: #8be0bd;
+  border: 1px solid rgba(139, 224, 189, 0.3);
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.mainGrid {
+  flex: 1;
+  max-width: 1240px;
+  width: 100%;
+  margin: 2.5rem auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+/* Left / Ward Status Pane */
+.statusPane {
+  background-color: #ffffff;
+  border: 1px solid #d2e0d8;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 16px rgba(20, 35, 40, 0.04);
+}
+
+.clinicHeading {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #142328;
+  line-height: 1.25;
+  margin-bottom: 0.5rem;
+}
+
+.clinicSubheading {
+  font-size: 0.88rem;
+  color: #556c64;
+  line-height: 1.5;
+  margin-bottom: 1.75rem;
+}
+
+.triageNotice {
+  background-color: #fdf6ec;
+  border-left: 4px solid #c87d32;
+  border-radius: 0 8px 8px 0;
+  padding: 0.85rem 1.15rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.triageNoticeTitle {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #8c4e12;
+  margin-bottom: 2px;
+}
+
+.triageNoticeText {
+  font-size: 0.78rem;
+  color: #6a421a;
+  line-height: 1.4;
+}
+
+.wardSectionTitle {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #142328;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wardList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.75rem;
+}
+
+.wardItem {
+  background-color: #f8faf8;
+  border: 1px solid #e1ebe5;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wardItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.speciesIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #e8f1ec;
+  color: #2e5e4e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.wardName {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #142328;
+}
+
+.wardCount {
+  font-size: 0.75rem;
+  color: #556c64;
+}
+
+.wardStatusTag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.statusSurgery {
+  background-color: #e8f0fe;
+  color: #1e40af;
+  border: 1px solid #bfdbfe;
+}
+
+.statusIcu {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.statusRecovery {
+  background-color: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+.handoverStaff {
+  background-color: #f8faf8;
+  border: 1px solid #e1ebe5;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  font-size: 0.78rem;
+}
+
+.staffLabel {
+  color: #6c7f79;
+  font-size: 0.7rem;
+  margin-bottom: 2px;
+}
+
+.staffValue {
+  font-weight: 600;
+  color: #142328;
+}
+
+/* Right / Authentication Form Pane */
+.authPane {
+  background-color: #ffffff;
+  border: 1px solid #d2e0d8;
+  border-radius: 12px;
+  padding: 2.25rem;
+  box-shadow: 0 4px 20px rgba(20, 35, 40, 0.05);
+}
+
+.authTitle {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #142328;
+  margin-bottom: 0.35rem;
+}
+
+.authSubtitle {
+  font-size: 0.82rem;
+  color: #556c64;
+  margin-bottom: 1.75rem;
+}
+
+.quickFillGroup {
+  margin-bottom: 1.5rem;
+}
+
+.quickFillLabel {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6c7f79;
+  margin-bottom: 0.45rem;
+  display: block;
+}
+
+.quickFillButtons {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.quickFillBtn {
+  background-color: #f1f5f2;
+  border: 1px solid #d2e0d8;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 0.72rem;
+  color: #2e5e4e;
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+
+.quickFillBtn:hover {
+  background-color: #e1ebe5;
+  border-color: #2e5e4e;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #142328;
+}
+
+.input, .select {
+  background-color: #ffffff;
+  border: 1px solid #cbd8d1;
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.85rem;
+  color: #142328;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus, .select:focus {
+  border-color: #2e5e4e;
+  box-shadow: 0 0 0 3px rgba(46, 94, 78, 0.15);
+}
+
+.helperText {
+  font-size: 0.7rem;
+  color: #6c7f79;
+}
+
+.checkboxRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #556c64;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.forgotLink {
+  color: #2e5e4e;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 0.78rem;
+  padding: 0;
+}
+
+.submitBtn {
+  background-color: #2e5e4e;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  margin-top: 0.5rem;
+}
+
+.submitBtn:hover {
+  background-color: #23493d;
+}
+
+.submitBtn:active {
+  transform: scale(0.99);
+}
+
+.bypassSection {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #e1ebe5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+}
+
+.bypassBtn {
+  background-color: #fdf6ec;
+  border: 1px solid #e6c8a0;
+  color: #8c4e12;
+  border-radius: 6px;
+  padding: 0.6rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.bypassBtn:hover {
+  background-color: #faebd7;
+}
+
+.footer {
+  background-color: #ffffff;
+  border-top: 1px solid #d2e0d8;
+  padding: 1.25rem 2rem;
+  font-size: 0.75rem;
+  color: #6c7f79;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(20, 35, 40, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modalBox {
+  background-color: #ffffff;
+  border: 1px solid #d2e0d8;
+  border-radius: 10px;
+  padding: 1.75rem;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 12px 36px rgba(20, 35, 40, 0.2);
+}
+
+@media (max-width: 900px) {
+  .mainGrid {
+    grid-template-columns: 1fr;
+    margin: 1.5rem auto;
+  }
+  .topBar {
+    padding: 0.75rem 1rem;
+  }
+  .systemStatus {
+    display: none;
+  }
+}
